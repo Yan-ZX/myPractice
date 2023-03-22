@@ -19,10 +19,10 @@ class Publisher {
   }
 
   notify() {
-    this.observers.forEach(item => { 
+    this.observers.forEach(item => {
       item.update(this);
     })
-   
+
   }
 }
 
@@ -37,12 +37,53 @@ class Observer {
   }
 }
 
-const a = new Observer('壹号');
-const b = new Observer('二号');
-const c = new Observer('三号');
-const publisherTest = new Publisher();
-publisherTest.add(a);
-publisherTest.add(b);
-publisherTest.add(c);
-publisherTest.notify();
+class PrdPublisher extends Publisher {
+  constructor() {
+    super()
+    this.prdState = null
+    this.observers = []
+    console.log('PrdPublisher created')
+  }
+
+  getState() {
+    console.log('PrdPublisher.getState invoked')
+    return this.prdState
+  }
+
+  setState(state) {
+    console.log('PrdPublisher.setState invoked')
+    this.prdState = state
+    this.notify()
+  }
+}
+
+class DeveloperObserver extends Observer {
+  constructor() {
+    super()
+    this.prdState = {}
+    console.log('DeveloperObserver created')
+  }
+
+  update(publisher) {
+    console.log('DeveloperObserver.update invoked')
+    this.prdState = publisher.getState()
+    this.work()
+  }
+
+  work() {
+    const prd = this.prdState
+    console.log('prd', prd);
+    console.log('996 begins...')
+  }
+}
+
+const A = new DeveloperObserver()
+const B = new DeveloperObserver()
+const test = new PrdPublisher()
+const prd = {
+  do: 'hello world...'
+}
+test.add(A)
+test.add(B)
+test.setState(prd)
 
